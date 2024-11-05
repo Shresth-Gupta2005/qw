@@ -1,0 +1,18 @@
+link - https://www.geeksforgeeks.org/how-to-start-and-stop-mongodb-server/
+
+On Windows, MongoDB is typically installed as a Windows service. You can manage it through the Services interface.
+
+
+Step 1: Starting the server
+Open the Run dialog (press Windows key + R).
+
+Type services.msc and press Enter. The Services window will open.
+
+Locate the service named "MongoDB" or similar (check your documentation if unsure).
+
+Right-click on the service and select "Start".
+Stopping the server:
+
+Follow steps 1 and 2 mentioned above.
+
+Right-click on the "MongoDB" service and select "Stop".
