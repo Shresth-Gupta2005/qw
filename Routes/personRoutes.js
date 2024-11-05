@@ -4,7 +4,6 @@ const router=express.Router();
 const bodyParser = require("body-parser");
 const { runInContext } = require("lodash");
 router.use(bodyParser.json());
-const xx=0;
 router.post("/", async (req, res) => {
   try {
     const data = req.body; // data comes from the body
