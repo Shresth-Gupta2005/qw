@@ -4,21 +4,70 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const { runInContext } = require("lodash");
 router.use(bodyParser.json());
-router.post("/", async (req, res) => {
+const {jwtAuthMidddleware,generateToken} = require("../jwt")
+router.post("/signup", async (req, res) => {
   try {
     const data = req.body; // data comes from the body
-    // kmwdeeeeeee
+    
     //create a new person using the mongoose model.
     const newPerson = new personModel(data);
 
     const savedPerson = await newPerson.save();
-    res.status(200).json(savedPerson);
+    
+    const payload={
+      id:savedPerson._id,
+      username:savedPerson.username
+
+    }
+    const token=generateToken(payload);
+    
+    res.status(200).json({savedPerson:savedPerson,token:token});
   } catch (error) {
     console.log(error);
     res.status(500).json(error);
   }
 });
-router.get("/", async (req, res) => {
+
+//login
+router.post('/login',async(req,res)=>{
+  try {
+    const {username,password}=req.body;
+    const user =await personModel.findOne({username:username});
+
+    if(!user){
+      return res.status(404).json({message:"user not found"});
+    }
+    const isPasswordMatch=await user.comparePassword(password);
+    if(!isPasswordMatch){
+      return res.status(401).json({message:"Incorrect password"});
+    }
+    //generate token
+    const payload={
+      id:user._id,
+      username:user.username
+    }
+    const token=generateToken(payload);
+    res.status(200).json({user:user,token:token});
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({error:"Internal error occured"});
+  }
+})
+
+//profile route
+router.get('/profile',jwtAuthMidddleware,async(req,res)=>{
+  try {
+    const userData=req.user; 
+    const userid=userData.id;
+    const user=await personModel.findById(userid);
+    res.status(200).json(user);
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({error:"Internal error occured"});
+  }})
+router.get("/",jwtAuthMidddleware, async (req, res) => {
   try {
     const data = await personModel.find();
     console.log("data fetched");

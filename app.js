@@ -25,7 +25,7 @@ app.get("/",localAuthMiddleware, (req, res) => {
 const personRoutes = require("./Routes/personRoutes");
 const menuRoutes = require("./Routes/menuRoutes");
 
-app.use("/person",localAuthMiddleware, personRoutes);
+app.use("/person", personRoutes);
 app.use("/menu", menuRoutes);
 
 const PORT = process.env.PORT || 3000;
